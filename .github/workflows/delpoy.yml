@@ -18,12 +18,14 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          echo "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config # Disable StrictHostKeyChecking for GitHub
-          eval $(ssh-agent -s)
-          echo "$SSH_PASSPHRASE" | ssh-add - # Provide the passphrase to unlock the key
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SSH_PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
+          # Replace 'your-server-ip' with your server's IP address
+
+      - name: Add SSH key passphrase
+        run: |
+          echo "${{ secrets.SSH_PASSPHRASE }}" | ssh-add -p
 
       - name: Deploy to DigitalOcean
         run: |
@@ -34,3 +36,4 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          SSH_PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
