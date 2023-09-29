@@ -1,4 +1,4 @@
-name: Deploy to DigitalOcean
+name: Wordpress Deployment
 
 on:
   push:
@@ -6,27 +6,24 @@ on:
       - main
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up SSH agent
-      run: |
-        mkdir -p ~/.ssh
-        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -t rsa -H $SSH_HOST >> ~/.ssh/known_hosts
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        SSH_HOST: ${{ secrets.SSH_HOST }}
+      - name: Set up SSH
+        uses: actions/setup-ssh@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          host-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-    - name: Deploy to DigitalOcean
-      run: |
-        ssh -i ~/.ssh/id_rsa -p $SSH_PORT root@$SSH_HOST "cd $DEPLOY_PATH && git pull origin main"
-      env:
-        SSH_PORT: ${{ secrets.SSH_PORT }}
-        SSH_HOST: ${{ secrets.SSH_HOST }}
-        DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+      - name: Deploy to Digital Ocean
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
+            cd ${{ secrets.DEPLOY_PATH }}
+            git pull origin main
+            sudo systemctl restart nginx
+          EOF
+
