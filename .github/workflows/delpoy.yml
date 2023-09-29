@@ -11,13 +11,12 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up SSH
-        uses: actions/setup-ssh@v2
+        uses: webfactory/ssh-agent@v3
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          host-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy to Digital Ocean
         run: |
