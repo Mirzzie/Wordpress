@@ -12,6 +12,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        
+      - name: Set SSH_AUTH_SOCK
+        run: echo "export SSH_AUTH_SOCK=$(ssh-agent -s)" >> $GITHUB_ENV
 
       - name: Configure SSH
         run: |
