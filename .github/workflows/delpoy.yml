@@ -25,7 +25,7 @@ jobs:
 
       - name: Add SSH key passphrase
         run: |
-          echo "${{ secrets.SSH_PASSPHRASE }}" | ssh-add -p
+          echo "$SSH_PASSPHRASE" | ssh-add -p
 
       - name: Deploy to DigitalOcean
         run: |
