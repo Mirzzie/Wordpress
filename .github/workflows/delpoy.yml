@@ -11,10 +11,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Set up SSH
-        uses: actions/setup-ssh@v3
+        uses: actions/setup-ssh@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           host-key: ${{ secrets.SSH_PRIVATE_KEY }}
