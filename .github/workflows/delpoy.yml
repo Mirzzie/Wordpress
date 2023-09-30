@@ -24,7 +24,7 @@ jobs:
 
       - name: Deploy to DigitalOcean
         run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.DEPLOY_PATH }} && git config --global user.name "${{ secrets.GIT_USER }}" && git config --global user.email "${{ secrets.GIT_EMAIL }}" && git config --global --add safe.directory && git pull origin main"
+          ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.DEPLOY_PATH }} && git config --global user.name "${{ secrets.GIT_USER }}" && git config --global user.email "${{ secrets.GIT_EMAIL }}" && git config --global --add safe.directory /var/www/html/wordpress && git pull origin main"
           ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "sudo systemctl restart nginx"
           
         env:
