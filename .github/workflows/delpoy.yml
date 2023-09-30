@@ -1,3 +1,4 @@
+
 name: WordPress Deployment
 
 on:
@@ -12,9 +13,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        
-      - name: Set SSH_AUTH_SOCK
-        run: echo "export SSH_AUTH_SOCK=$(ssh-agent -s)" >> $GITHUB_ENV
 
       - name: Configure SSH
         run: |
@@ -24,19 +22,13 @@ jobs:
           ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          # Replace 'your-server-ip' with your server's IP address
-
-      - name: Add SSH key passphrase
-        run: |
-          echo "$SSH_PASSPHRASE" | ssh-add -p
 
       - name: Deploy to DigitalOcean
         run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.DEPLOY_PATH }} && git pull origin main"
-          sudo systemctl restart nginx
+          ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.DEPLOY_PATH }} && git pull origin main"
+          ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "sudo systemctl restart nginx"
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
-          SSH_PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
