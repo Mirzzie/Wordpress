@@ -2,6 +2,10 @@
 
 Guide for automated deployment process for a WordPress website using Nginx as the web server, the LEMP stack (Linux, Nginx, MySQL, PHP), and GitHub Actions for (CI/CD).
 
+## My Wordpress website URL
+ ```bash
+   https://stormx.ddns.net/
+```
 ## Prerequisites
 
 - A Linux-based server with root access (Ubuntu based recommended).
